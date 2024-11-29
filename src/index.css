@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.dark button.sun-btn svg {
+    color: #fff;
+}
