@@ -81,17 +81,27 @@ const App = () => {
     });
   };
 
-  const filteredFlights = mockFlights.filter((flight) => {
-    if (flight.cabinClass !== searchParams.cabinClass) return false;
-    if (
-      flight.price < filters.priceRange[0] ||
-      flight.price > filters.priceRange[1]
-    )
-      return false;
-    if (filters.stops !== "all" && flight.stops !== parseInt(filters.stops))
-      return false;
-    return true;
-  });
+const filteredFlights = mockFlights.filter((flight) => {
+  if (flight.cabinClass !== searchParams.cabinClass) return false;
+  if (
+    flight.price < filters.priceRange[0] ||
+    flight.price > filters.priceRange[1]
+  )
+    return false;
+  if (filters.stops !== "all" && flight.stops !== parseInt(filters.stops))
+    return false;
+  
+  // Handle Departure Time filtering
+  if (filters.departureTime !== "all") {
+    const flightHour = parseInt(flight.departureTime.split(':')[0]);
+    if (filters.departureTime === "morning" && (flightHour < 6 || flightHour >= 12)) return false;
+    if (filters.departureTime === "afternoon" && (flightHour < 12 || flightHour >= 18)) return false;
+    if (filters.departureTime === "evening" && (flightHour < 18 || flightHour >= 24)) return false;
+  }
+
+  return true;
+});
+
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -132,13 +142,13 @@ const App = () => {
             </button>
             <button onClick={toggleDarkMode} className="p-2">
               {darkMode ? (
-                <button className="sun-btn">
+                <span className="sun-btn">
                   <FaSun />
-                </button>
+                </span>
               ) : (
-                <button className="moon-btn">
+                <span className="moon-btn">
                   <FaMoon />
-                </button>
+                </span>
               )}
             </button>
           </div>
@@ -149,6 +159,8 @@ const App = () => {
           handleSearch={handleSearch}
           locations={locations}
           cabinClasses={cabinClasses}
+          filters={filters}
+          handleFilterChange={handleFilterChange} // Pass the handleFilterChange function
         />
         <div className="flex flex-wrap justify-between items-center mb-6">
           <div className="flex space-x-4">

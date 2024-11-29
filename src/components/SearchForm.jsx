@@ -10,7 +10,11 @@ export default function SearchForm({
   loading,
   locations,
   cabinClasses,
-  filters,
+  filters = {
+    priceRange: [0, 2000], // Default price range
+    departureTime: "all",
+    sortBy: "price",
+  },
   handleFilterChange,
 }) {
   const [darkMode] = useDarkMode();
@@ -157,7 +161,7 @@ export default function SearchForm({
                 type="range"
                 min="0"
                 max="2000"
-                value={filters.priceRange[1]}
+                value={filters.priceRange ? filters.priceRange[1] : 2000} 
                 onChange={(e) =>
                   handleFilterChange("priceRange", [
                     0,
